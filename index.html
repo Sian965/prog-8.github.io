@@ -95,13 +95,13 @@ const confirmData = {
 // ---- UI生成 ----
 function buildInputs(target, data){
   for(const k in data){
-    target.innerHTML += `<div class="row"><label>${k}</label><input type="number" id="${k}" min="0" value="0"></div>`;
+    target.innerHTML += `<div class=\"row\"><label>${k}</label><input type=\"number\" id=\"${k}\" min=\"0\" value=\"0\"></div>`;
   }
 }
 
 function buildChecks(target, data){
   for(const k in data){
-    target.innerHTML += `<div class="row"><label>${k}</label><input type="checkbox" id="${k}"></div>`;
+    target.innerHTML += `<div class=\"row\"><label>${k}</label><input type=\"checkbox\" id=\"${k}\"></div>`;
   }
 }
 
@@ -109,16 +109,18 @@ buildInputs(document.getElementById('endScreens'), endScreens);
 buildInputs(document.getElementById('akashi'), akashiData);
 buildChecks(document.getElementById('confirm'), confirmData);
 
-// ---- 計算 ----
+// ---- 計算（対数尤度） ----
 function calc(){
-  let L = Array(6).fill(1);
+  let logL = Array(6).fill(0);
 
   const n = Number(games.value)||0;
   if(n>0){
     for(const key in small){
       const k = Number(document.getElementById(key).value)||0;
       small[key].forEach((p,i)=>{
-        L[i] *= Math.pow(p,k)*Math.pow(1-p,n-k);
+        if(p>0 && p<1 && k<=n){
+          logL[i] += k*Math.log(p) + (n-k)*Math.log(1-p);
+        }
       });
     }
   }
@@ -126,30 +128,33 @@ function calc(){
   for(const key in endScreens){
     const c = Number(document.getElementById(key).value)||0;
     endScreens[key].forEach((p,i)=>{
-      L[i] *= Math.pow(p,c);
+      if(p>0 && c>0) logL[i] += c*Math.log(p);
     });
   }
 
   for(const key in akashiData){
     const c = Number(document.getElementById(key).value)||0;
     akashiData[key].forEach((p,i)=>{
-      L[i] *= Math.pow(p,c);
+      if(p>0 && c>0) logL[i] += c*Math.log(p);
     });
   }
 
   for(const key in confirmData){
     if(document.getElementById(key).checked){
       confirmData[key].forEach((ok,i)=>{
-        if(!ok) L[i]=0;
+        if(!ok) logL[i] = -Infinity;
       });
     }
   }
 
+  const maxLog = Math.max(...logL);
+  let L = logL.map(v => v===-Infinity ? 0 : Math.exp(v-maxLog));
   const sum = L.reduce((a,b)=>a+b,0);
   const result = L.map(v=>sum? v/sum:0);
 
   let html = '<tr><th>設定</th>' + settings.map(s=>`<th>${s}</th>`).join('') + '</tr>';
-  html += '<tr><th>確率</th>' + result.map(v=>`<td class="${v===Math.max(...result)?'result-high':''}">${(v*100).toFixed(1)}%</td>`).join('') + '</tr>';
+  const maxV = Math.max(...result);
+  html += '<tr><th>確率</th>' + result.map(v=>`<td class=\"${v===maxV?'result-high':''}\">${(v*100).toFixed(1)}%</td>`).join('') + '</tr>';
   document.getElementById('result').innerHTML = html;
 }
 
