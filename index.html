@@ -1,8 +1,8 @@
-<!DOCTYPE html>
-<html lang="ja">
+
+<!DOCTYPE html><html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>アズレン設定判別ツール</title>
+  <title>スロット設定判別ツール</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; background:#f7f7f7; margin:0; padding:16px; }
@@ -20,11 +20,7 @@
     .result-high { font-weight:bold; color:#d22; }
   </style>
 </head>
-<body>
-
-<h1>アズレン設定判別ツール</h1>
-
-<div class="card">
+<body><h1>スロット設定判別ツール</h1><div class="card">
   <h2>① 小役確率</h2>
   <div class="row">
     <label>総ゲーム数（共通）</label>
@@ -33,30 +29,20 @@
   <div class="row"><label>共通ベル 回数</label><input type="number" id="bell" min="0" /></div>
   <div class="row"><label>弱チェ 回数</label><input type="number" id="weak" min="0" /></div>
   <div class="row"><label>スイカ 回数</label><input type="number" id="suika" min="0" /></div>
-</div>
-
-<div class="card">
+</div><div class="card">
   <h2>② 終了画面（回数入力）</h2>
   <div id="endScreens"></div>
-</div>
-
-<div class="card">
+</div><div class="card">
   <h2>③ 明石チャレンジ告知（回数入力）</h2>
   <div id="akashi"></div>
-</div>
-
-<div class="card">
+</div><div class="card">
   <h2>④ 確定系（1回でも出たらチェック）</h2>
   <div id="confirm"></div>
   <p class="note">※ トロフィーはボーナス／AT終了時に出現する可能性あり<br>※ 獲得枚数表示は複数回出る可能性あり</p>
-</div>
-
-<div class="card">
+</div><div class="card">
   <h2>推測結果</h2>
   <table id="result"></table>
-</div>
-
-<script>
+</div><script>
 const settings = [1,2,3,4,5,6];
 
 // ---- 確率データ ----
@@ -88,6 +74,7 @@ const confirmData = {
   '金トロフィー':[false,false,false,true,true,true],
   'ゼブラ柄トロフィー':[false,false,false,false,true,true],
   '虹トロフィー':[false,false,false,false,false,true],
+  '246枚over':[false,true,false,true,false,true],
   '456枚over':[false,false,false,true,true,true],
   '666枚over':[false,false,false,false,false,true]
 };
@@ -161,7 +148,5 @@ function calc(){
 document.body.addEventListener('input', calc);
 document.body.addEventListener('change', calc);
 calc();
-</script>
-
-</body>
+</script></body>
 </html>
